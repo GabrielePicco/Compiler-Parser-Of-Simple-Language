@@ -1,4 +1,11 @@
+/** Esercizio 5.1
+ * La classe Instruction verra usata per rappresentare singole istruzioni del linguaggio
+ * mnemonico. Il metodo toJasmin restituisce l’istruzione nel formato adeguato per 
+ * l’assembler Jasmin
+ */
+
 public class Instruction {
+	
 	 OpCode opCode ;
 	 int operand ;
 

@@ -1,3 +1,7 @@
+/**
+ * Classe per il tipo (INTEGER OR BOOLEAN)
+ */
+
 public enum Type {
 	BOOLEAN(0), INTEGER(1), NONE(-1);
 

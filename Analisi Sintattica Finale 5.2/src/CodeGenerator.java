@@ -1,3 +1,12 @@
+/** Esercizio 5.1
+ * La classe CodeGenerator ha lo scopo di memorizzare in una struttura apposita la lista delle
+ * istruzioni (come oggetti di tipo Instruction) generate durante la parsificazione. 
+ * I metodi emit sono usati per aggiungere istruzioni o etichette di salto nel codice. 
+ * Le costanti header e footer definiscono il preambolo e l’epilogo del codice generato 
+ * dal traduttore per restituire, mediante il metodo toJasmin, un file la cui struttura 
+ * risponde ai requisiti dell’assembler Jasmin.
+ */
+
 import java.util.LinkedList;
 import java.io.*;
 

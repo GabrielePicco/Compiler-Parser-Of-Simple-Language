@@ -1,6 +1,17 @@
+/** Esercizio 5.2
+ * Modificare il programma del esercizio precedente in modo da tradurre programmi
+ * ben tipati scritti nel frammento del linguaggio P che permette non solo il comando print e le
+ * espressione aritmetiche-logici ma anche l’utilizzo di variabili. Piu precisamente, 
+ * il frammento permette (1) la dichiarazione di variabili, (2) l’assegnazione di valori 
+ * di espressioni a variabili, e l’utilizzo di variabili in espressioni.
+ */
+
 import java.io.*;
 
+import org.omg.CosNaming.IstringHelper;
+
 public class Traduttore {
+
 	private Lexer lex;
 	private BufferedReader pbr;
 	private Token look;
@@ -19,7 +30,7 @@ public class Traduttore {
 	}
 
 	void error(String s) {
-		throw new Error("near line " + Lexer.line + ": " + s);
+		throw new Error("near line " + lex.line + ": " + s);
 	}
 
 	void match(int t) {
@@ -31,49 +42,55 @@ public class Traduttore {
 	}
 
 	private void prog() {
-		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN || look.tag == Tag.ID || look.tag == Tag.PRINT || look.tag == Tag.BEGIN) {
+
+		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN
+				|| look.tag == Tag.ID || look.tag == Tag.PRINT
+				|| look.tag == Tag.BEGIN) {
 			declist();
 			stat();
 			match(Tag.EOF);
-			
-			// Stampa
+
+			// Creazione Output.j
 			try {
 				code.toJasmin();
 			} catch (IOException e) {
 				throw new Error("Errore di traduzione");
 			}
-		} else{
+		} else
 			error("syntax error in function prog" + look.tag);
-		}
 	}
-	
+
 	private void declist() {
 		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN) {
 			dec();
 			match(';');
 			declist();
-		}else if((look.tag != Tag.ID && look.tag != Tag.PRINT && look.tag != Tag.BEGIN)){
-			error("syntax error in function oreE" + look.tag);
+		} else if ((look.tag != Tag.ID && look.tag != Tag.PRINT && look.tag != Tag.BEGIN)) {
+			error("syntax error in function declist" + look.tag);
 		}
 	}
-	
-	private void dec(){
+
+	private void dec() {
 		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN) {
 			Type dec_type = type();
-			sb.insert(((Word)look).getLexeme(),dec_type,sb.getAddress());
+			// inserimento nella tabella dei simboli
+			sb.insert(((Word) look).getLexeme(), dec_type, sb.getAddress());
 			match(Tag.ID);
 			idList(dec_type);
 		}
 	}
-	
+
 	private Type statlist() {
 		Type statlist_type = Type.NONE;
-		if (look.tag == Tag.ID || look.tag == Tag.PRINT || look.tag == Tag.BEGIN) {
+		if (look.tag == Tag.ID || look.tag == Tag.PRINT
+				|| look.tag == Tag.BEGIN) {
 			Type stat_type = stat();
 			statlist_type = statlist_p(stat_type);
-		} else{
-			error("syntax error in function statlist no match 'ID' or 'PRINT' or 'BEGIN': " + look.tag);
+		} else {
+			error("syntax error in function statlist: no match 'ID' or 'PRINT' or 'BEGIN': "
+					+ look.tag);
 		}
+
 		return statlist_type;
 	}
 
@@ -85,73 +102,79 @@ public class Traduttore {
 			statlist_p_type = statlist_p(stat_type);
 		} else if (look.tag == Tag.END) {
 			statlist_p_type = statlist_i;
-		} else{
-			error("syntax error in function statlist_p no match ';' or 'END': " + look.tag);
+		} else {
+			error("syntax error in function statlist_p: no match ';' or 'END': "
+					+ look.tag);
 		}
 		return statlist_p_type;
 	}
 
-	private Type idList(Type idList_i){
+	private Type idList(Type idList_i) {
 		Type idList_type = Type.NONE;
-		
-		if (look.tag == ','){
+
+		if (look.tag == ',') {
 			match(',');
-			sb.insert(((Word)look).getLexeme(), idList_i, sb.getAddress());   // inserimento nella tabella
+			// inserimento nella tabella dei simboli
+			sb.insert(((Word) look).getLexeme(), idList_i, sb.getAddress());
+
 			match(Tag.ID);
 			idList_type = idList(idList_i);
-			
-		} else if (look.tag == ';'){
+		} else if (look.tag == ';') {
 			idList_type = idList_i;
-			
 		} else
 			error("syntax error in function idList" + look.tag);
-		
+
 		return idList_type;
 	}
-	
-	private Type type(){
+
+	private Type type() {
 		Type type_type = Type.NONE;
-		
-		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN){
+
+		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN) {
 			int tmp = look.tag;
 			move();
-			if (tmp == Tag.INTEGER){
+			if (tmp == Tag.INTEGER) {
 				type_type = Type.INTEGER;
-			} else if (tmp == Tag.BOOLEAN){
+			} else if (tmp == Tag.BOOLEAN) {
 				type_type = Type.BOOLEAN;
 			}
-		} else 
+		} else
 			error("syntax error in function type" + look.tag);
-		
+
 		return type_type;
 	}
-	
-	private Type stat(){
+
+	private Type stat() {
 		Type stat_type = Type.NONE;
-		
-		if (look.tag == Tag.ID){
-			int tmp_addr = sb.lookupAddress(((Word)look).getLexeme());
-			Type tmp_type = sb.lookupType(((Word)look).getLexeme());
+
+		if (look.tag == Tag.ID) {
+			// salvo indirizzo
+			int tmp_addr = sb.lookupAddress(((Word) look).getLexeme());
+			// salvo il tipo
+			Type tmp_type = sb.lookupType(((Word) look).getLexeme());
 			match(Tag.ID);
 			match(Tag.ASSIGN);
 			Type orE_type = orE();
-			if (orE_type == tmp_type){
+			if (orE_type == tmp_type) {
 				code.emit(OpCode.istore, tmp_addr);
 			} else
-				error("syntax error in function type: NOT INTEGER OR BOOL" + look.tag);
-		} else if (look.tag == Tag.PRINT){
+				error("syntax error in function type: ELEMENTS NON EQUAL"
+						+ look.tag);
+		} else if (look.tag == Tag.PRINT) {
 			match(Tag.PRINT);
 			match('(');
 			stat_type = orE();
 			match(')');
+			// Istruzione per salto condizionato in base a valore di
+			// prog_type (int o bool);
 			code.emit(OpCode.invokestatic, stat_type.getValue());
-		} else if (look.tag == Tag.BEGIN){
+		} else if (look.tag == Tag.BEGIN) {
 			match(Tag.BEGIN);
 			stat_type = statlist();
 			match(Tag.END);
-		} else 
+		} else
 			error("syntax error in function type" + look.tag);
-		
+
 		return stat_type;
 	}
 
@@ -161,9 +184,9 @@ public class Traduttore {
 				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
 			Type andE_type = andE();
 			orE_type = orE_p(andE_type);
-		} else {
+		} else
 			error("syntax error in function oreE" + look.tag);
-		}
+
 		return orE_type;
 	}
 
@@ -180,9 +203,8 @@ public class Traduttore {
 			}
 		} else if (look.tag == ')' || look.tag == Tag.END || look.tag == ';') {
 			orE_p_type = orE_i;
-		} else {
+		} else
 			error("syntax error in function orE_p" + look.tag);
-		}
 
 		return orE_p_type;
 	}
@@ -193,9 +215,9 @@ public class Traduttore {
 				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
 			Type relE_type = relE();
 			andE_type = andE_p(relE_type);
-		} else {
+		} else
 			error("syntax error in function andE" + look.tag);
-		}
+
 		return andE_type;
 	}
 
@@ -210,11 +232,11 @@ public class Traduttore {
 				code.emit(OpCode.iand);
 				andE_p_type = andE_p(relE_type);
 			}
-		} else if (look.tag == ')' || look.tag == Tag.OR || look.tag == Tag.END || look.tag == ';') {
+		} else if (look.tag == ')' || look.tag == Tag.OR || look.tag == Tag.END
+				|| look.tag == ';') {
 			andE_p_type = andE_i;
-		} else {
+		} else
 			error("syntax error in function andE_p" + look.tag);
-		}
 
 		return andE_p_type;
 	}
@@ -225,9 +247,9 @@ public class Traduttore {
 				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
 			Type addE_type = addE();
 			relE_type = relE_p(addE_type);
-		} else {
+		} else
 			error("syntax error in function relE" + look.tag);
-		}
+
 		return relE_type;
 	}
 
@@ -235,9 +257,9 @@ public class Traduttore {
 		Type relE_p_type = Type.NONE;
 		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE
 				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>') {
-			
+
 			int oprel_tag = oprel();
-			
+
 			Type addE_type = addE();
 			relE_p_type = addE_type;
 			int ltrue = code.newLabel();
@@ -265,21 +287,24 @@ public class Traduttore {
 				code.emit(OpCode.ldc, 1);
 				code.emitLabel(lnext);
 			}
-		} else if (look.tag == Tag.AND || look.tag == Tag.OR || look.tag == ')' || look.tag == Tag.END || look.tag == ';') {
+		} else if (look.tag == Tag.AND || look.tag == Tag.OR || look.tag == ')'
+				|| look.tag == Tag.END || look.tag == ';') {
 			relE_p_type = relE_i;
-		} else {
+		} else
 			error("syntax error in function relE_p" + look.tag);
-		}
 
 		return relE_p_type;
 	}
-	
-	private int oprel(){
+
+	/* Metodo per parte facoltativa esercizio 5.1 */
+	private int oprel() {
 		int oprel_tag = -1;
-		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE || look.tag == Tag.GE || look.tag == '<' || look.tag == '>') {
+		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE
+				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>') {
 			oprel_tag = look.tag;
 			move();
 		}
+
 		return oprel_tag;
 	}
 
@@ -327,7 +352,7 @@ public class Traduttore {
 		Type multE_type = Type.NONE;
 
 		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE
-				|| look.tag == Tag.FALSE || look.tag == Tag.ID || look.tag == Tag.ID) {
+				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
 			Type fact_type = fact();
 			multE_type = multE_p(fact_type);
 		} else
@@ -356,7 +381,8 @@ public class Traduttore {
 		} else if (look.tag == '+' || look.tag == '-' || look.tag == Tag.EQ
 				|| look.tag == Tag.NE || look.tag == Tag.LE
 				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>'
-				|| look.tag == Tag.OR || look.tag == Tag.AND || look.tag == ')' || look.tag == Tag.END || look.tag == ';') {
+				|| look.tag == Tag.OR || look.tag == Tag.AND || look.tag == ')'
+				|| look.tag == Tag.END || look.tag == ';') {
 			multE_p_type = multE_p_i;
 		} else
 			error("syntax error in function multE_p" + look.tag);
@@ -371,18 +397,23 @@ public class Traduttore {
 			fact_type = orE();
 			match(')');
 		} else if (look.tag == Tag.ID) {
-			code.emit(OpCode.iload, sb.lookupAddress(((Word) (look)).getLexeme()));
-			fact_type = sb.lookupType(((Word) (look)).getLexeme());
+			// carica sulla pila l'indirizzo della variabile
+			code.emit(OpCode.iload, sb.lookupAddress(((Word) look).getLexeme()));
+			// restituisci il tipo della variabile
+			fact_type = sb.lookupType(((Word) look).getLexeme());
 			match(Tag.ID);
 		} else if (look.tag == Tag.NUM) {
+			// carica sulla pila la costante
 			code.emit(OpCode.ldc, ((Number) look).lexVal());
 			match(Tag.NUM);
 			fact_type = Type.INTEGER;
 		} else if (look.tag == Tag.TRUE) {
+			// carica sulla pila la costante 1 (TRUE)
 			code.emit(OpCode.ldc, 1);
 			match(Tag.TRUE);
 			fact_type = Type.BOOLEAN;
 		} else if (look.tag == Tag.FALSE) {
+			// carica sulla pila la costante 0 (FALSE)
 			code.emit(OpCode.ldc, 0);
 			match(Tag.FALSE);
 			fact_type = Type.BOOLEAN;

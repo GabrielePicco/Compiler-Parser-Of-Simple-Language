@@ -1,3 +1,9 @@
+/**
+ *  Esercizio 4.1
+ * Valutatore di espressioni semplici: Modificare l’analizzatore sintattico dell'esercizio 3.1 
+ * in modo da valutare le espressioni aritmetiche semplici
+ */
+
 import java.io.*;
 
 public class Valutatore {
@@ -124,20 +130,4 @@ public class Valutatore {
 		}
 	}
 
-//	public static void main(String[] args) {
-//		Lexer lex = new Lexer();
-//		String path = "code/demo.txt"; // il percorso del file da leggere
-//		try {
-//			BufferedReader br = new BufferedReader(new FileReader(path));
-//			Valutatore parser = new Valutatore(lex, br);
-//			try{
-//				parser.start();
-//			} catch (Error e) {
-//				e.printStackTrace();
-//			}
-//			br.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 }

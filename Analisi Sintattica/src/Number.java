@@ -1,3 +1,8 @@
+/**
+ * Esercizio 2.1
+ * La classe Number rappresenta i token che corrispondono ai numeri
+ */
+
 public class Number extends Token {
 	private int val = 0;
 

@@ -1,7 +1,15 @@
+/**
+ *  Esercizio 1.8. 
+ * Costruire il DFA equivalente al epsilon-NFA in Figura 3, e 
+ * implementare il DFA seguendo la construzione vista in Figura 2.
+ */
 public class Deterministico {
+	
 	public static boolean scan(String s) {
+		
 		int state = 0;
 		int i = 0;
+		
 		while (state >= 0 && i < s.length()) {
 			final char ch = s.charAt(i++);
 			switch (state) {

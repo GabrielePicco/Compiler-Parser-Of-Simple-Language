@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Move element &apos;Word.java&apos; to &apos;Analisi Sintattica Finale 5.2/src/(default package)&apos;&#x0D;&#x0A;- Original project: &apos;Analisi Sintattica Finale 5.3&apos;&#x0D;&#x0A;- Destination element: &apos;Analisi Sintattica Finale 5.2/src/(default package)&apos;&#x0D;&#x0A;- Original element: &apos;Word.java&apos;&#x0D;&#x0A;- Update references to refactored element" description="Move compilation unit" destination="=Analisi Sintattica Finale 5.2/src&lt;" element1="/src&lt;{Word.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.move" policy="org.eclipse.jdt.ui.moveResources" qualified="false" references="true" stamp="1452180180884" units="1" version="1.0"/>
+</session>

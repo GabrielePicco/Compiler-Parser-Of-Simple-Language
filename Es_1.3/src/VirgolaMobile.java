@@ -1,4 +1,11 @@
+/**
+ *  Esercizio 1.3. Modificare l’automa dell’esercizio precedente in modo che 
+ * riconosca costanti numeriche precedute e/o seguite da sequenze eventualmente 
+ * vuote di spazi. Modificare l’implementazione Java dell’automa conseguentemente.
+ */
+
 import static java.lang.Character.isDigit;
+
 public class VirgolaMobile {
 	public static boolean scan(String s) {
 		int state = 0;

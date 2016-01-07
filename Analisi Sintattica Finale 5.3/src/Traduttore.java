@@ -41,10 +41,8 @@ public class Traduttore {
 
 	private void prog() {
 
-		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN
-				|| look.tag == Tag.ID || look.tag == Tag.PRINT
-				|| look.tag == Tag.BEGIN || look.tag == Tag.WHILE
-				|| look.tag == Tag.IF) {
+		if (look.tag == Tag.INTEGER || look.tag == Tag.BOOLEAN || look.tag == Tag.ID || look.tag == Tag.PRINT
+				|| look.tag == Tag.BEGIN || look.tag == Tag.WHILE || look.tag == Tag.IF) {
 			declist();
 			stat();
 			match(Tag.EOF);
@@ -64,8 +62,8 @@ public class Traduttore {
 			dec();
 			match(';');
 			declist();
-		} else if ((look.tag != Tag.ID && look.tag != Tag.PRINT
-				&& look.tag != Tag.BEGIN && look.tag != Tag.WHILE && look.tag != Tag.IF)) {
+		} else if ((look.tag != Tag.ID && look.tag != Tag.PRINT && look.tag != Tag.BEGIN && look.tag != Tag.WHILE
+				&& look.tag != Tag.IF)) {
 			error("syntax error in function declist" + look.tag);
 		}
 	}
@@ -82,14 +80,12 @@ public class Traduttore {
 
 	private Type statlist() {
 		Type statlist_type = Type.NONE;
-		if (look.tag == Tag.ID || look.tag == Tag.PRINT
-				|| look.tag == Tag.BEGIN || look.tag == Tag.WHILE
+		if (look.tag == Tag.ID || look.tag == Tag.PRINT || look.tag == Tag.BEGIN || look.tag == Tag.WHILE
 				|| look.tag == Tag.IF) {
 			Type stat_type = stat();
 			statlist_type = statlist_p(stat_type);
 		} else {
-			error("syntax error in function statlist: no match 'ID' or 'PRINT' or 'BEGIN': "
-					+ look.tag);
+			error("syntax error in function statlist: no match 'ID' or 'PRINT' or 'BEGIN': " + look.tag);
 		}
 
 		return statlist_type;
@@ -104,8 +100,7 @@ public class Traduttore {
 		} else if (look.tag == Tag.END) {
 			statlist_p_type = statlist_i;
 		} else {
-			error("syntax error in function statlist_p: no match ';' or 'END': "
-					+ look.tag);
+			error("syntax error in function statlist_p: no match ';' or 'END': " + look.tag);
 		}
 
 		return statlist_p_type;
@@ -160,8 +155,7 @@ public class Traduttore {
 			if (exp_type == tmp_type) {
 				code.emit(OpCode.istore, tmp_addr);
 			} else
-				error("syntax error in function type: ELEMENTS NON EQUAL"
-						+ look.tag);
+				error("syntax error in function type: ELEMENTS NON EQUAL" + look.tag);
 		} else if (look.tag == Tag.PRINT) {
 			match(Tag.PRINT);
 			match('(');
@@ -188,7 +182,7 @@ public class Traduttore {
 				match(Tag.DO);
 				code.emit(OpCode.ldc, 0);
 				// paragone tra val inserito da exp sulla pila e 0
-				// se Ã‹ vero esci dal ciclo
+				// se è vero esci dal ciclo
 				code.emit(OpCode.if_icmpeq, lesc);
 				stat_type = stat();
 				code.emit(OpCode.GOto, lwhile);
@@ -197,25 +191,33 @@ public class Traduttore {
 				error("error in while condition" + look.tag);
 		} else if (look.tag == Tag.IF) {
 			int lfalse = code.newLabel();
-			int ltrue = code.newLabel();
+			int lnext = code.newLabel();
 			match(Tag.IF);
 			// exp inserisce o 0 oppure 1 sulla pila
 			Type exp_type = exp();
 			if (exp_type == Type.BOOLEAN) {
 				// confronto tra val di exp e 0
 				code.emit(OpCode.ldc, 0);
-				// se uguali vai nell'else
+				// se uguali vai alla label false
 				code.emit(OpCode.if_icmpeq, lfalse);
+				// se diversi
 				match(Tag.THEN);
 				stat_type = stat();
-				// salta a ltrue
-				code.emit(OpCode.GOto, ltrue);
-				code.emitLabel(lfalse);
+	
+				/* se esiste ramo else bisogna aggiungere una etichetta 
+				 * per non far entrare condizione vera in lfalse
+				 */
 				if (look.tag == Tag.ELSE) {
 					match(Tag.ELSE);
+					// salta a lnext
+					code.emit(OpCode.GOto, lnext);
+					// inizio lfalse
+					code.emitLabel(lfalse);
 					stat_type = stat();
-				}
-				code.emitLabel(ltrue);
+					code.emitLabel(lnext);
+				} else  // se non esiste ramo else dobbiamo avere solo etichetta lfalse
+					code.emitLabel(lfalse);
+
 			} else
 				error("error in if condition: NOT BOOL" + look.tag);
 		} else
@@ -226,8 +228,8 @@ public class Traduttore {
 
 	private Type orE() {
 		Type orE_type = Type.NONE;
-		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE
-				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
+		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE || look.tag == Tag.FALSE
+				|| look.tag == Tag.ID) {
 			Type andE_type = andE();
 			orE_type = orE_p(andE_type);
 		} else
@@ -247,9 +249,8 @@ public class Traduttore {
 				code.emit(OpCode.ior);
 				orE_p_type = orE_p(andE_type);
 			}
-		} else if (look.tag == ')' || look.tag == Tag.END || look.tag == ';'
-				|| look.tag == Tag.DO || look.tag == Tag.THEN
-				|| look.tag == Tag.ELSE) {
+		} else if (look.tag == ')' || look.tag == Tag.END || look.tag == ';' || look.tag == Tag.DO
+				|| look.tag == Tag.THEN || look.tag == Tag.ELSE) {
 			orE_p_type = orE_i;
 		} else
 			error("syntax error in function orE_p" + look.tag);
@@ -259,8 +260,8 @@ public class Traduttore {
 
 	private Type andE() {
 		Type andE_type = Type.NONE;
-		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE
-				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
+		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE || look.tag == Tag.FALSE
+				|| look.tag == Tag.ID) {
 			Type relE_type = relE();
 			andE_type = andE_p(relE_type);
 		} else
@@ -280,8 +281,7 @@ public class Traduttore {
 				code.emit(OpCode.iand);
 				andE_p_type = andE_p(relE_type);
 			}
-		} else if (look.tag == ')' || look.tag == Tag.OR || look.tag == Tag.END
-				|| look.tag == ';' || look.tag == Tag.DO
+		} else if (look.tag == ')' || look.tag == Tag.OR || look.tag == Tag.END || look.tag == ';' || look.tag == Tag.DO
 				|| look.tag == Tag.THEN || look.tag == Tag.ELSE) {
 			andE_p_type = andE_i;
 		} else
@@ -292,8 +292,8 @@ public class Traduttore {
 
 	private Type relE() {
 		Type relE_type = Type.NONE;
-		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE
-				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
+		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE || look.tag == Tag.FALSE
+				|| look.tag == Tag.ID) {
 			Type addE_type = addE();
 			relE_type = relE_p(addE_type);
 		} else
@@ -304,8 +304,8 @@ public class Traduttore {
 
 	private Type relE_p(Type relE_i) {
 		Type relE_p_type = Type.NONE;
-		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE
-				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>') {
+		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE || look.tag == Tag.GE || look.tag == '<'
+				|| look.tag == '>') {
 			// salvo look.tag in variabile
 			int oprel_tag = oprel();
 
@@ -346,9 +346,8 @@ public class Traduttore {
 				code.emitLabel(lnext);
 				relE_p_type = Type.BOOLEAN;
 			}
-		} else if (look.tag == Tag.AND || look.tag == Tag.OR || look.tag == ')'
-				|| look.tag == Tag.END || look.tag == ';' || look.tag == Tag.DO
-				|| look.tag == Tag.THEN || look.tag == Tag.ELSE) {
+		} else if (look.tag == Tag.AND || look.tag == Tag.OR || look.tag == ')' || look.tag == Tag.END
+				|| look.tag == ';' || look.tag == Tag.DO || look.tag == Tag.THEN || look.tag == Tag.ELSE) {
 			relE_p_type = relE_i;
 		} else
 			error("syntax error in function relE_p" + look.tag);
@@ -356,10 +355,11 @@ public class Traduttore {
 		return relE_p_type;
 	}
 
+	/* Metodo per parte facoltativa esercizio 5.1 */
 	private int oprel() {
 		int oprel_tag = -1;
-		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE
-				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>') {
+		if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE || look.tag == Tag.GE || look.tag == '<'
+				|| look.tag == '>') {
 			// salvataggio look.tag
 			oprel_tag = look.tag;
 			move();
@@ -371,8 +371,8 @@ public class Traduttore {
 	private Type addE() {
 		Type addE_type = Type.NONE;
 
-		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE
-				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
+		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE || look.tag == Tag.FALSE
+				|| look.tag == Tag.ID) {
 			Type multE_type = multE();
 			addE_type = addE_p(multE_type);
 		} else
@@ -397,11 +397,9 @@ public class Traduttore {
 				addE_p_type = addE_p(multE_type);
 			} else
 				error("syntax error in function addE_p: NOT INTEGER" + look.tag);
-		} else if (look.tag == Tag.EQ || look.tag == Tag.NE
-				|| look.tag == Tag.LE || look.tag == Tag.GE || look.tag == '<'
-				|| look.tag == '>' || look.tag == Tag.OR || look.tag == Tag.AND
-				|| look.tag == ')' || look.tag == Tag.END || look.tag == ';'
-				|| look.tag == Tag.DO || look.tag == Tag.THEN
+		} else if (look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE || look.tag == Tag.GE
+				|| look.tag == '<' || look.tag == '>' || look.tag == Tag.OR || look.tag == Tag.AND || look.tag == ')'
+				|| look.tag == Tag.END || look.tag == ';' || look.tag == Tag.DO || look.tag == Tag.THEN
 				|| look.tag == Tag.ELSE) {
 			addE_p_type = addE_p_i;
 		} else
@@ -413,8 +411,8 @@ public class Traduttore {
 	private Type multE() {
 		Type multE_type = Type.NONE;
 
-		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE
-				|| look.tag == Tag.FALSE || look.tag == Tag.ID) {
+		if (look.tag == '(' || look.tag == Tag.NUM || look.tag == Tag.TRUE || look.tag == Tag.FALSE
+				|| look.tag == Tag.ID) {
 			Type fact_type = fact();
 			multE_type = multE_p(fact_type);
 		} else
@@ -438,13 +436,10 @@ public class Traduttore {
 				}
 				multE_p_type = multE_p(fact_type);
 			} else
-				error("syntax error in function multE_p: NOT INTEGER"
-						+ look.tag);
-		} else if (look.tag == '+' || look.tag == '-' || look.tag == Tag.EQ
-				|| look.tag == Tag.NE || look.tag == Tag.LE
-				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>'
-				|| look.tag == Tag.OR || look.tag == Tag.AND || look.tag == ')'
-				|| look.tag == Tag.END || look.tag == ';' || look.tag == Tag.DO
+				error("syntax error in function multE_p: NOT INTEGER" + look.tag);
+		} else if (look.tag == '+' || look.tag == '-' || look.tag == Tag.EQ || look.tag == Tag.NE || look.tag == Tag.LE
+				|| look.tag == Tag.GE || look.tag == '<' || look.tag == '>' || look.tag == Tag.OR || look.tag == Tag.AND
+				|| look.tag == ')' || look.tag == Tag.END || look.tag == ';' || look.tag == Tag.DO
 				|| look.tag == Tag.THEN || look.tag == Tag.ELSE) {
 			multE_p_type = multE_p_i;
 		} else
@@ -455,8 +450,8 @@ public class Traduttore {
 
 	private Type exp() {
 		Type exp_type = Type.NONE;
-		if (look.tag == '(' || look.tag == Tag.ID || look.tag == Tag.NUM
-				|| look.tag == Tag.TRUE || look.tag == Tag.FALSE) {
+		if (look.tag == '(' || look.tag == Tag.ID || look.tag == Tag.NUM || look.tag == Tag.TRUE
+				|| look.tag == Tag.FALSE) {
 			exp_type = orE();
 
 		} else
@@ -500,7 +495,7 @@ public class Traduttore {
 
 	public static void main(String[] args) {
 		Lexer lex = new Lexer();
-		String path = "code/demo2.pas"; // percorso del file da leggere
+		String path = "code/demo.pas"; // percorso del file da leggere
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			Traduttore v = new Traduttore(lex, br);

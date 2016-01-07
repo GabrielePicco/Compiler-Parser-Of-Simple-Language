@@ -1,3 +1,11 @@
+/** 
+ * Esercizio 3.1
+ * Analizzatore sintattico a discesa ricorsiva che parsifica espressioni
+ * aritmetiche molto semplici, composte soltanto da numeri non negativi, operatori di somma 
+ * e sottrazione + e -, operatori di moltiplicazione e divisione * e /, 
+ * simboli di parentesi ( e ).
+ */
+
 import java.io.*;
 
 public class Parser {
@@ -106,21 +114,23 @@ public class Parser {
 			break;
 		}
 	}
+/*	
+	public static void main(String[] args) {
+	Lexer lex = new Lexer();
+	String path = "code/demo.txt"; // il percorso del file da leggere
+	try {
+		BufferedReader br = new BufferedReader(new FileReader(path));
+		Parser parser = new Parser(lex, br);
+		try{
+			parser.start();
+		} catch (Error e) {
+			e.printStackTrace();
+		}
+		br.close();
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+}
+*/
 
-//	public static void main(String[] args) {
-//		Lexer lex = new Lexer();
-//		String path = "code/demo.txt"; // il percorso del file da leggere
-//		try {
-//			BufferedReader br = new BufferedReader(new FileReader(path));
-//			Parser parser = new Parser(lex, br);
-//			try{
-//				parser.start();
-//			} catch (Error e) {
-//				e.printStackTrace();
-//			}
-//			br.close();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
-//	}
 }

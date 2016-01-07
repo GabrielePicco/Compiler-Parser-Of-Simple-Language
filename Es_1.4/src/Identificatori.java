@@ -1,5 +1,13 @@
+/**
+ *  Esercizio 1.4. Progettare e implementare un DFA che riconosca 
+ * il linguaggio degli identificatori in un linguaggio in stile Java: un identificatore e'
+ * una sequenza non vuota di lettere, numeri, ed il simbolo di sottolineatura _ che non 
+ * comincia con un numero e che non puo essere composto solo da un _.
+ */
+
 import static java.lang.Character.isDigit;
 import static java.lang.Character.isLetter;
+
 public class Identificatori {
 	public static boolean scan(String s) {
 		int state = 0;

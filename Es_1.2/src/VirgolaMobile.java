@@ -1,4 +1,12 @@
+/** Esercizio 1.2
+ * Progettare un DFA che riconosca il linguaggio delle costanti numeriche in virgola
+ * mobile. Esempi di tali costanti sono: 123 123.5 .567 +7.5 -.7 67e10 1e-2 -.7e2
+ * Realizzare il DFA in Java seguendo la costruzione vista in Figura 2, assicurarsi 
+ * che l’implementazione riconosca il linguaggio desiderato.
+ */
+
 import static java.lang.Character.isDigit;
+
 public class VirgolaMobile {
 	public static boolean scan(String s) {
 		int state = 0;

@@ -1,7 +1,13 @@
+/**
+ *  Esercizio 2.1
+ * Analizzatore lessicale di comandi semplici
+ */
+
 import java.io.*;
 import java.util.*;
 
 public class Lexer {
+	
 	public static int line = 1;
 	private char peek = ' ';
 	Hashtable<String, Word> words = new Hashtable<String, Word>();

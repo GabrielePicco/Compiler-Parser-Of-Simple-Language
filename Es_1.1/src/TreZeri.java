@@ -1,3 +1,11 @@
+/**
+ *  Copiare il codice in Figura 2, compilarlo e testarlo su un insieme significativo di
+ * stringhe, per es. 010101, 1100011001, 10214, ecc. 
+ * Come deve essere modificato il DFA in Figura 1 per riconoscere il linguaggio complementare,
+ * ovvero il linguaggio delle stringhe di 0 e 1 che non contengono 3 zeri consecutivi? Progettare e
+ * implementare il DFA modificato, e testare il suo funzionamento.
+*/
+
 public class TreZeri {
 	public static boolean scan(String s) {
 		int state = 0;

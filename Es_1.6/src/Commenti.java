@@ -1,7 +1,16 @@
+// Esercizio 1.6. Progettare e implementare un DFA con l’alfabeto {/, *, a} che riconosca il linguaggio
+//   di stringhe che contengono almeno 4 caratteri che iniziano con /*, che finiscono con */
+// e che contengono una solo occorrenza della sequenza */
+// quella finale. Verificare che il DFA accetti le stringhe:
+// /****/, /*a*a*/, /*a/**/, /**a///a/a**/ e /**/ ma non /*/ oppure /**/***/.
+
 public class Commenti {
+	
 	public static boolean scan(String s) {
+		
 		int state = 0;
 		int i = 0;
+		
 		while (state >= 0 && i < s.length()) {
 			final char ch = s.charAt(i++);
 			switch (state) {

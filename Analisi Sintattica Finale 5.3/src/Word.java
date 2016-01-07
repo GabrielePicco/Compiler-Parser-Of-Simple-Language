@@ -1,4 +1,11 @@
+/**
+ * Esercizio 2.1
+ * Word rappresenta i token che corrispondono agli identificatori, alle parole chiave
+ * agli elementi del sintassi che consistono di piu caratteri
+ */
+
 public class Word extends Token {
+	
 	public String lexeme = "";
 
 	public Word(int tag, String s) {

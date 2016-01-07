@@ -1,3 +1,10 @@
+/**
+ *  Esercizio 4.2 facoltativo
+ * Type checker: programma per controllare i tipi di un’espressione aritmetico-logica semplice
+ * (cioe' per segnalare se l’espressione contiene un’incompatibilita'
+ *  rispetto ai tipi delle sue sotto-espressioni)
+ */
+
 import java.io.*;
 
 public class ValutatoreFacoltativo {

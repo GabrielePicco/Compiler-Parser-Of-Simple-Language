@@ -1,6 +1,13 @@
+/** Esercizio 5.1
+ * Per tenere traccia degli identificatori, che in base alla grammatica del linguaggio P 
+ * possono essere dichiarati solo all’inizio del programma, occorre predisporre una tabella 
+ * dei simboli.
+ */
+
 import java.util.*;
 
 public class SymbolTable {
+	
 	private static int ADDRESS = -1;
 
      Map <String, Type> TypeMap = new HashMap <String, Type>(); //symbol table type
@@ -19,7 +26,7 @@ public class SymbolTable {
         else throw new IllegalArgumentException("Riferimento ad una locazione di memoria gia' occupata da un'altra variabile." );
 	}
 
-	public Type lookupType ( String s) {
+	public Type lookupType (String s) {
 
         //eccezione se la stringa non e' presente
         if( TypeMap.containsKey(s) ) return TypeMap.get(s);
@@ -27,14 +34,15 @@ public class SymbolTable {
 
 	}
 	
+	/* restituisce l'indirizzo della variabile */
 	public int getAddress(){
 		return ++SymbolTable.ADDRESS;
 	}
 
-	public int lookupAddress ( String s ) {
+	public int lookupAddress (String s) {
 
         //eccezione se la stringa non e' presente
-        if( OffsetMap.containsKey(s) ) return OffsetMap.get(s);
+        if(OffsetMap.containsKey(s)) return OffsetMap.get(s);
         throw new IllegalArgumentException("Variabile sconosciuta.");
 	}
 }
