@@ -1,7 +1,7 @@
 /**
  *  PROGETTO: Esercizio 5.1 + Esercizio 5.1 Facoltativo
  * Si scriva un traduttore per programmi ben tipati scritti nel frammento del linguaggio P
- *  che permette di stampare sul terminale il valore di unï¿½espressione aritmetica-logico.
+ *  che permette di stampare sul terminale il valore di un’espressione aritmetica-logico.
  */
 
 import java.io.*;
@@ -26,7 +26,7 @@ public class Traduttore {
 	}
 
 	void error(String s) {
-		throw new Error("near line " + Lexer.line + ": " + s);
+		throw new Error("near line " + lex.line + ": " + s);
 	}
 
 	void match(int t) {

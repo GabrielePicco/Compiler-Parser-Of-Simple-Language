@@ -182,7 +182,7 @@ public class Traduttore {
 				match(Tag.DO);
 				code.emit(OpCode.ldc, 0);
 				// paragone tra val inserito da exp sulla pila e 0
-				// se ï¿½ vero esci dal ciclo
+				// se è vero esci dal ciclo
 				code.emit(OpCode.if_icmpeq, lesc);
 				stat_type = stat();
 				code.emit(OpCode.GOto, lwhile);
@@ -495,7 +495,7 @@ public class Traduttore {
 
 	public static void main(String[] args) {
 		Lexer lex = new Lexer();
-		String path = "code/demo2.pas"; // percorso del file da leggere
+		String path = "code/demo.pas"; // percorso del file da leggere
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(path));
 			Traduttore v = new Traduttore(lex, br);
