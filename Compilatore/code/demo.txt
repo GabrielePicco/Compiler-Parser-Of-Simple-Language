@@ -1,0 +1,7 @@
+var _s, t: integer;
+var datiOK: boolean;
+_s:=300000000;
+t:=1;
+datiOK:= (_s >=0) && (t > 0);
+print(datiOK);
+print(_s/t);
