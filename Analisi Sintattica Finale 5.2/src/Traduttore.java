@@ -1,14 +1,12 @@
 /** Esercizio 5.2
  * Modificare il programma del esercizio precedente in modo da tradurre programmi
  * ben tipati scritti nel frammento del linguaggio P che permette non solo il comando print e le
- * espressione aritmetiche-logici ma anche l’utilizzo di variabili. Piu precisamente, 
- * il frammento permette (1) la dichiarazione di variabili, (2) l’assegnazione di valori 
- * di espressioni a variabili, e l’utilizzo di variabili in espressioni.
+ * espressione aritmetiche-logici ma anche lï¿½utilizzo di variabili. Piu precisamente, 
+ * il frammento permette (1) la dichiarazione di variabili, (2) lï¿½assegnazione di valori 
+ * di espressioni a variabili, e lï¿½utilizzo di variabili in espressioni.
  */
 
 import java.io.*;
-
-import org.omg.CosNaming.IstringHelper;
 
 public class Traduttore {
 
@@ -30,7 +28,7 @@ public class Traduttore {
 	}
 
 	void error(String s) {
-		throw new Error("near line " + lex.line + ": " + s);
+		throw new Error("near line " + Lexer.line + ": " + s);
 	}
 
 	void match(int t) {
