@@ -1,6 +1,10 @@
 INDEX VERSION 1.127+/Users/gabriele/GitHub/lft/.metadata/.plugins/org.eclipse.jdt.core
+<<<<<<< HEAD
 4083284298.index
 3676725848.index
+=======
+1023932425.index
+>>>>>>> origin/master
 2535718965.index
 1334622778.index
 2754424148.index

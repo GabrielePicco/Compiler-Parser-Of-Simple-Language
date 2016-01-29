@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 integer x,y;
 begin
   x := 1;
@@ -7,3 +8,6 @@ begin
   else
     print(y)
 end
+=======
+print ( 10 == 20 && 30 / 0 > 15 ) 
+>>>>>>> origin/master
